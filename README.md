@@ -8,7 +8,7 @@ https://rs-aws-task-2-cdk.s3.us-east-1.amazonaws.com
 
 ## Cloudfront link
 
-https://d19btqgjzlve32.cloudfront.net
+https://d109mal03xnf1d.cloudfront.net/
 
 
 # React-shop-cloudfront
