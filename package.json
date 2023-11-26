@@ -6,13 +6,15 @@
     "start": "vite",
     "build": "tsc && vite build",
     "build-ts-test": "tsc && vite build --mode ts-staging",
+    "build-ts-prod": "tsc && vite build --mode ts-prod",
     "preview": "npm run build && vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ignore-path .gitignore --fix src",
     "prettier": "prettier src --write",
-    "cdk-deploy-test": "npm run build-ts-test && cd cdk && npm run deploy"
+    "cdk-deploy-test": "npm run build-ts-test && cd cdk && npm run deploy",
+    "cdk-deploy-prod": "npm run build-ts-prod && cd cdk && npm run deploy"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
