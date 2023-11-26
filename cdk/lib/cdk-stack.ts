@@ -27,6 +27,7 @@ export class CdkStack extends cdk.Stack {
             }),
             viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
+        
         defaultRootObject: 'index.html',
         errorResponses: [
             {
