@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import axios from "axios";
 
 type CSVFileImportProps = {
   url: string;
@@ -25,22 +26,46 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const uploadFile = async () => {
     console.log("uploadFile to", url);
 
+    if (file == null) {
+      return;
+    }
+    let uploadUrl: string | null = null;
     // Get the presigned URL
-    // const response = await axios({
-    //   method: "GET",
-    //   url,
-    //   params: {
-    //     name: encodeURIComponent(file.name),
-    //   },
-    // });
-    // console.log("File to upload: ", file.name);
-    // console.log("Uploading to: ", response.data);
-    // const result = await fetch(response.data, {
-    //   method: "PUT",
-    //   body: file,
-    // });
-    // console.log("Result: ", result);
-    // setFile("");
+    try {
+      const response = await axios({
+        method: "GET",
+        url,
+        params: {
+          name: encodeURIComponent(file.name),
+        },
+        headers: {
+          Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+        },
+      });
+      uploadUrl = response.data;
+    } catch (err: any) {
+      console.log('failed to get signed URL');
+      console.error(err);
+      const status = err.response.status;
+      if (status == 401) {
+        alert('Error 401. Authorization token was not provided');
+      } else if (status == 403) {
+        alert('Error 403. Authorization token is invalid');
+      }
+    }
+
+    if (!uploadUrl) {
+      return;
+    }
+
+    console.log("File to upload: ", file.name);
+    console.log("Uploading to: ", uploadUrl);
+    const result = await fetch(uploadUrl, {
+      method: "PUT",
+      body: file,
+    });
+    console.log("Result: ", result);
+    setFile(undefined);
   };
   return (
     <Box>
