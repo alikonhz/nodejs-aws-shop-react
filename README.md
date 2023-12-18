@@ -1,3 +1,16 @@
+# RS Task 2
+
+## S3 bucket link
+
+(shows 403 error)
+
+https://rs-aws-task-2-cdk.s3.us-east-1.amazonaws.com
+
+## Cloudfront link
+
+https://d109mal03xnf1d.cloudfront.net/
+
+
 # React-shop-cloudfront
 
 This is frontend starter project for nodejs-aws mentoring program. It uses the following technologies:
