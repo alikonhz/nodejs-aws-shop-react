@@ -39,7 +39,7 @@ export class CdkStack extends cdk.Stack {
                 httpStatus: 403,
                 responseHttpStatus: 200,
                 responsePagePath: '/index.html',
-            },
+            }
         ],
     });  
     new deployment.BucketDeployment(this, 'RS-AWS-Task2-DeployWebApp', {
