@@ -7,10 +7,28 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
+import { Axios, AxiosError } from "axios";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
+    mutations: {
+      onError: (error) => {
+        const err = error as AxiosError;
+        if (!err) {
+          console.error(error);
+          return;
+        }
+
+        const status = err.response?.status;
+        if (status == 401) {
+          alert('Error 401. Authorization token was not provided');
+        } else if (status == 403) {
+          alert('Error 403. Authorization token is invalid');
+        }
+
+      }
+    }
   },
 });
 

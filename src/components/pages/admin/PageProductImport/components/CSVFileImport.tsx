@@ -31,28 +31,17 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     }
     let uploadUrl: string | null = null;
     // Get the presigned URL
-    try {
-      const response = await axios({
-        method: "GET",
-        url,
-        params: {
-          name: encodeURIComponent(file.name),
-        },
-        headers: {
-          Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-        },
-      });
-      uploadUrl = response.data;
-    } catch (err: any) {
-      console.log('failed to get signed URL');
-      console.error(err);
-      const status = err.response.status;
-      if (status == 401) {
-        alert('Error 401. Authorization token was not provided');
-      } else if (status == 403) {
-        alert('Error 403. Authorization token is invalid');
-      }
-    }
+    const response = await axios({
+      method: "GET",
+      url,
+      params: {
+        name: encodeURIComponent(file.name),
+      },
+      headers: {
+        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+      },
+    });
+    uploadUrl = response.data;
 
     if (!uploadUrl) {
       return;
