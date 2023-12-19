@@ -10,7 +10,8 @@ export class CdkStack extends cdk.Stack {
     super(scope, id, props);
 
     const bucket = new s3.Bucket(this, 'RS-AWS-Task2-WebBucket', {
-      bucketName: 'rs-aws-task-2-cdk'
+      bucketName: 'rs-aws-task-2-cdk',
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     }); 
 
     const originAccessIdentity = new cf.OriginAccessIdentity(this, 'RS-AWS-Task2-WebBucketOAI', {
@@ -26,6 +27,7 @@ export class CdkStack extends cdk.Stack {
             }),
             viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
+        
         defaultRootObject: 'index.html',
         errorResponses: [
             {
@@ -37,7 +39,7 @@ export class CdkStack extends cdk.Stack {
                 httpStatus: 403,
                 responseHttpStatus: 200,
                 responsePagePath: '/index.html',
-            },
+            }
         ],
     });  
     new deployment.BucketDeployment(this, 'RS-AWS-Task2-DeployWebApp', {
