@@ -14,11 +14,14 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
   const { data = [], isFetching } = useCart();
   const { mutate: upsertCart } = useUpsertCart();
   const invalidateCart = useInvalidateCart();
-  const cartItem = data.find((i) => i.product.id === product.id);
+  const cartItem = data?.find((i) => i?.product?.id === product.id);
 
   const addProduct = () => {
     upsertCart(
-      { product, count: cartItem ? cartItem.count + 1 : 1 },
+      {
+        product,
+        count: cartItem ? cartItem.count + 1 : 1,
+      },
       { onSuccess: invalidateCart }
     );
   };
@@ -26,13 +29,13 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
   const removeProduct = () => {
     if (cartItem) {
       upsertCart(
-        { ...cartItem, count: cartItem.count - 1 },
+        { product, count: cartItem.count - 1 },
         { onSuccess: invalidateCart }
       );
     }
   };
 
-  return cartItem ? (
+  return cartItem && cartItem.count !== 0 ? (
     <>
       <IconButton disabled={isFetching} onClick={removeProduct} size="large">
         <Remove color={"secondary"} />

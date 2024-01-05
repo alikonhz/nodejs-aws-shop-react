@@ -5,6 +5,12 @@ import ListItemText from "@mui/material/ListItemText";
 import { CartItem } from "~/models/CartItem";
 import { formatAsPrice } from "~/utils/utils";
 import AddProductToCart from "~/components/AddProductToCart/AddProductToCart";
+import { useAvailableProducts } from "~/queries/products";
+import { useEffect, useMemo, useState } from "react";
+import { AvailableProduct } from "~/models/Product";
+import axios from "axios";
+import API_PATHS from "~/constants/apiPaths";
+import get from "lodash/get";
 
 type CartItemsProps = {
   items: CartItem[];
@@ -12,15 +18,48 @@ type CartItemsProps = {
 };
 
 export default function CartItems({ items, isEditable }: CartItemsProps) {
-  const totalPrice: number = items.reduce(
-    (total, item) => item.count * item.product.price + total,
-    0
-  );
+  const [products, setProducts] = useState<AvailableProduct[]>([]);
+
+  useEffect(() => {
+    (async function getProducts() {
+      try {
+        const response = await axios.get(`${API_PATHS.bff}/products`, {});
+        const products = get(response, "data.products", []);
+        setProducts(products);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, []);
+
+  const { isLoading } = useAvailableProducts();
+  const totalPrice: number = items.reduce((total, item) => {
+    if (!item.price) return total;
+    return total + item.price * item.count;
+  }, 0);
+  const orderIdArr = items.map((item) => item.product_id);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const itemWithData: CartItem[] = products
+    .filter((el) => orderIdArr.includes(el.id))
+    .map((el) => ({
+      product: el,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      count: (items as CartItem[])?.find(
+        (item) => (item?.product_id as string) === el.id
+      ).count,
+    }));
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <>
       <List disablePadding>
-        {items.map((cartItem: CartItem) => (
+        {itemWithData.map((cartItem: CartItem) => (
           <ListItem
             sx={{ padding: (theme) => theme.spacing(1, 0) }}
             key={cartItem.product.id}

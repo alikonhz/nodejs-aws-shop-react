@@ -15,6 +15,9 @@ import {
 
 export default function Orders() {
   const { data } = useOrders();
+
+  // @ts-ignore
+  const orderArr = data?.order ?? [];
   const invalidateOrders = useInvalidateOrders();
   const { mutate: deleteOrder } = useDeleteOrder();
 
@@ -31,37 +34,40 @@ export default function Orders() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell component="th" scope="row">
-                {order.address?.firstName} {order.address?.lastName}
-              </TableCell>
-              <TableCell align="right">{order.items.length}</TableCell>
-              <TableCell align="right">{order.address?.address}</TableCell>
-              <TableCell align="right">
-                {order.statusHistory[order.statusHistory.length - 1].status}
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  size="small"
-                  color="primary"
-                  component={Link}
-                  to={order.id}
-                >
-                  Manage
-                </Button>
-                <Button
-                  size="small"
-                  color="secondary"
-                  onClick={() =>
-                    deleteOrder(order.id, { onSuccess: invalidateOrders })
-                  }
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {orderArr?.map((order: any) => {
+            return (
+              <TableRow key={order.id}>
+                <TableCell component="th" scope="row">
+                  {order.delivery?.firstName} {order.delivery?.lastName}
+                </TableCell>
+                <TableCell align="right">{order.cart.items?.length}</TableCell>
+                <TableCell align="right">{order.delivery?.address}</TableCell>
+                <TableCell align="right">
+                  {order.status}
+                  {/*{order.statusHistory[order.statusHistory?.length - 1].status}*/}
+                </TableCell>
+                <TableCell align="right">
+                  {/*<Button*/}
+                  {/*  size="small"*/}
+                  {/*  color="primary"*/}
+                  {/*  component={Link}*/}
+                  {/*  to={order.id}*/}
+                  {/*>*/}
+                  {/*  Manage*/}
+                  {/*</Button>*/}
+                  <Button
+                    size="small"
+                    color="secondary"
+                    onClick={() =>
+                      deleteOrder(order.id, { onSuccess: invalidateOrders })
+                    }
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
